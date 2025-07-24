@@ -1,5 +1,5 @@
 Package: miaDash
-Version: 1.1.1
+Version: 1.1.2
 Authors@R: 
     c(person(given = "Giulio", family = "Benedetti", role = c("aut", "cre"),
            email = "giulio.benedetti@utu.fi",
@@ -25,7 +25,6 @@ Depends:
     shiny
 Imports:
     ape,
-    biomformat,
     htmltools,
     iSEEtree (>= 1.1.4),
     mia,

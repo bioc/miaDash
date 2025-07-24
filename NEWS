@@ -1,6 +1,21 @@
-Changes in version 0.1.0
-* Initialised app
-* Added import functionality
+Changes in version 1.1.2
+* Added importers for HUMAnN, QIIME2 and Mothur
+* Improved biom importer
+
+Changes in version 0.99.12
+* Fixed tab title
+
+Changes in version 0.99.5
+* Implemented error check system
+* Added mia logo
+
+Changes in version 0.99.3
+* Added tree import option
+* Fixed bugs with RDS and unifrac
+* Added clickable title box
+
+Changes in version 0.99.2
+* Moved to shinydashboard
 
 Changes in version 0.2.0
 * Added manipulate functionality
@@ -8,17 +23,6 @@ Changes in version 0.2.0
 * Added panel layout customisation
 * Added unit testing
 
-Changes in version 0.99.2
-* Moved to shinydashboard
-
-Changes in version 0.99.3
-* Added tree import option
-* Fixed bugs with RDS and unifrac
-* Added clickable title box
-
-Changes in version 0.99.5
-* Implemented error check system
-* Added mia logo
-
-Changes in version 0.99.12
-* Fixed tab title
+Changes in version 0.1.0
+* Initialised app
+* Added import functionality
