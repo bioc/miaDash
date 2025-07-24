@@ -117,3 +117,24 @@ NULL
     cond <- all(vars %in% names(colData(tse)))
     return(cond)
 }
+
+#' @importFrom mia importBIOM
+#' @importFrom S4Vectors DataFrame
+#' @importFrom ape read.tree
+#' @importFrom utils read.table
+.importBIOM <- function(file, col.data = NULL, tree.file = NULL, ...){
+  
+    tse <- importBIOM(file, ...)
+  
+    if( !is.null(col.data) ){
+        coldata <- read.table(file = col.data, header = TRUE, sep = "\t")
+        rownames(coldata) <- colnames(tse)
+        colData(tse) <- DataFrame(coldata)
+    }
+
+    if( !is.null(tree.file) ){
+        rowTree(tse) <- read.tree(tree.file)
+    }
+  
+    return(tse)
+}

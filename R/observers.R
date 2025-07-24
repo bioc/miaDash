@@ -17,11 +17,11 @@
 #' @importFrom utils read.csv
 #' @importFrom ape read.tree
 #' @importFrom S4Vectors DataFrame
-#' @importFrom biomformat read_biom
-#' @importFrom mia convertFromBIOM importMetaPhlAn
+#' @importFrom mia importHUMAnN importMetaPhlAn importQIIME2 importMothur
+#'   addAlpha
 #' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment
 .create_import_observers <- function(input, rObjects) {
-  
+
     # nocov start
     observeEvent(input$import, {
       
@@ -72,33 +72,58 @@
           
             isolate({
                 req(input$main.file)
-      
+              
+                coldata <- .set_optarg(input$col.data$datapath,
+                    alternative = input$col.data$datapath)
+                
+                treefile <- .set_optarg(input$tree.file$datapath,
+                    alternative = input$tree.file$datapath)
+                
                 if( input$ftype == "biom" ){
 
-                    biom_object <- read_biom(input$main.file$datapath)
-                    
-                    fun_args <- list(x = biom_object,
+                    fun_args <- list(file = input$main.file$datapath,
+                        col.data = coldata, tree.file = treefile,
                         removeTaxaPrefixes = input$rm.tax.pref,
                         rankFromPrefix = input$rank.from.pref)
-
+                    
                     rObjects$tse <- .update_tse(
-                        rObjects$tse, convertFromBIOM, fun_args
+                        rObjects$tse, .importBIOM, fun_args
                     )
               
-                } else if( input$ftype == "MetaPhlAn" ){
-                  
-                    coldata <- .set_optarg(input$col.data$datapath,
-                        alternative = input$col.data$datapath)
+                }else if( input$ftype == "HUMAnN" ){
+                
+                    fun_args <- list(file = input$main.file$datapath,
+                        col.data = coldata,
+                        prefix.rm = input$rm.tax.pref,
+                        remove.suffix = input$rm.hum.suf)
                     
-                    treefile <- .set_optarg(input$tree.file$datapath)
-                  
+                    rObjects$tse <- .update_tse(
+                        rObjects$tse, importHUMAnN, fun_args
+                    )
+
+                }else if( input$ftype == "MetaPhlAn" ){
+
                     fun_args <- list(file = input$main.file$datapath,
                         col.data = coldata, tree.file = treefile)
               
                     rObjects$tse <- .update_tse(
-                         rObjects$tse, importMetaPhlAn, fun_args
-                    ) 
-                 
+                        rObjects$tse, importMetaPhlAn, fun_args
+                    )
+                
+                }else if( input$ftype %in% c("Mothur", "QIIME2") ){
+                  
+                    imp_fun <- eval(parse(text = paste0("import", input$ftype)))
+                
+                    rowdata <- .set_optarg(input$f.rowdata$datapath,
+                        alternative = input$f.rowdata$datapath)
+                    
+                    fun_args <- list(assay.file = input$main.file$datapath,
+                        row.file = input, col.file = rowdata)
+                    
+                    rObjects$tse <- .update_tse(
+                        rObjects$tse, imp_fun, fun_args
+                    )
+                
                 }
         
             })

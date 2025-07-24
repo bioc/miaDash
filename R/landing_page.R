@@ -73,36 +73,54 @@
                           
                         tabPanel(title = "Foreign", value = "foreign", br(),
                                   
-                            radioButtons(inputId = "ftype",
-                                label = "Type:", choices = list("biom", "QZA",
-                                "MetaPhlAn"), inline = TRUE),
+                            radioButtons(inputId = "ftype", label = "Type:",
+                                choices = list("biom", "HUMAnN", "MetaPhlAn",
+                                "Mothur", "QIIME2"), inline = TRUE),
                              
                             fileInput(inputId = "main.file",
                                 label = "Main file:", accept = c(".biom",
-                                ".QZA", ".txt"),
-                                placeholder = "biom, QZA or txt"),
+                                ".tsv", ".shared", ".QZA", ".txt"),
+                                placeholder = "biom, tsv, shared, QZA or txt"),
                             div(style = "margin-top: -20px"),
-                             
+                            
+                            fileInput(inputId = "col.data", label = "colData:",
+                                accept = c(".tsv", ".design"),
+                                placeholder = "tsv or design"),
+                            div(style = "margin-top: -20px"),
+                            
+                            conditionalPanel(
+                                condition = "input.ftype == 'Mothur' | input.ftype == 'QIIME2'",
+                               
+                                fileInput(inputId = "f.rowdata",
+                                    label = "rowData:", accept = c(".taxonomy",
+                                    ".qza"), placeholder = "taxonomy or qza"),
+                                div(style = "margin-top: -20px")),
+                                
+                            conditionalPanel(
+                                condition = "input.ftype == 'biom' | input.ftype == 'MetaPhlAn'",
+                                
+                                fileInput(inputId = "tree.file",
+                                    label = "rowTree:", placeholder = "tree.tree",
+                                    accept = c(".tree", ".tre", ".qza")),
+                                div(style = "margin-top: -20px")),
+                            
+                            conditionalPanel(
+                                condition = "input.ftype == 'biom' | input.ftype == 'HUMAnN'",
+                            
+                                checkboxInput(inputId = "rm.tax.pref",
+                                    label = "Remove taxa prefixes")),
+                                
                             conditionalPanel(
                                 condition = "input.ftype == 'biom'",
-                               
-                                checkboxInput(inputId = "rm.tax.pref",
-                                    label = "Remove taxa prefixes"),
-                               
+                            
                                 checkboxInput(inputId = "rank.from.pref",
                                     label = "Derive taxa from prefixes")),
-                             
+                            
                             conditionalPanel(
-                                condition = "input.ftype == 'MetaPhlAn'",
-                               
-                                fileInput(inputId = "col.data",
-                                    label = "colData:", accept = ".tsv",
-                                    placeholder = "coldata.tsv"),
-                                div(style = "margin-top: -20px"),
-                                 
-                                fileInput(inputId = "tree.file",
-                                    label = "Tree:", placeholder = "tree.tree",
-                                    accept = c(".tree", ".tre"))))),
+                                condition = "input.ftype == 'HUMAnN'",
+                            
+                                checkboxInput(inputId = "rm.hum.suf",
+                                    label = "Remove sample suffix")))),
               
                     actionButton("import", "Upload", class = "btn-primary")),
             
