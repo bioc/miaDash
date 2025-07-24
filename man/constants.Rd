@@ -9,6 +9,7 @@
 \alias{.alphaMetrics}
 \alias{.betaMetrics}
 \alias{.betaMethods}
+\alias{.qualityMetrics}
 \title{Constants}
 \format{
 An object of class \code{character} of length 7.
@@ -22,6 +23,8 @@ An object of class \code{character} of length 23.
 An object of class \code{character} of length 4.
 
 An object of class \code{character} of length 4.
+
+An object of class \code{list} of length 4.
 }
 \usage{
 .miaDashDefaultPanels
@@ -35,6 +38,8 @@ An object of class \code{character} of length 4.
 .betaMetrics
 
 .betaMethods
+
+.qualityMetrics
 }
 \description{
 Constant values used throughout the miaDash app.

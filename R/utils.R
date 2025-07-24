@@ -61,7 +61,7 @@ NULL
 }
 
 #' @rdname utils
-.update_tse <- function(tse, fun, fun.args) {
+.update_tse <- function(tse, fun, fun.args = list()) {
 
     tse <- tryCatch({withCallingHandlers({
         
@@ -119,6 +119,8 @@ NULL
 }
 
 #' @importFrom mia importBIOM
+#' @importFrom SummarizedExperiment colData
+#' @importFrom TreeSummarizedExperiment rowTree
 #' @importFrom S4Vectors DataFrame
 #' @importFrom ape read.tree
 #' @importFrom utils read.table

@@ -1,5 +1,5 @@
 Package: miaDash
-Version: 1.1.2
+Version: 1.1.3
 Authors@R: 
     c(person(given = "Giulio", family = "Benedetti", role = c("aut", "cre"),
            email = "giulio.benedetti@utu.fi",
@@ -10,7 +10,7 @@ Authors@R:
     person(given = "Leo", family = "Lahti", role = c("aut"),
              email = "leo.lahti@iki.fi",
              comment = c(ORCID = "0000-0001-5537-637X")))
-Title: Shiny app for the interactive analysis and exploration of microbiome data
+Title: Dashboard for the interactive analysis and exploration of microbiome data
 Description:
     miaDash provides a Graphical User Interface for the exploration of
     microbiome data. This way, no knowledge of programming is required to
@@ -30,6 +30,7 @@ Imports:
     mia,
     rintrojs,
     scater,
+    scuttle,
     shinydashboard,
     shinyjs,
     S4Vectors,
