@@ -180,11 +180,17 @@
                         header = tagList(
                             br(), selectInput(inputId = "estimate.assay",
                                 label = "Assay:", choices = NULL)),
+                        
+                        tabPanel(title = "Quality", value = "quality",
+                            
+                            checkboxGroupInput(inputId = "quality.metrics",
+                                label = "Metrics:",
+                                choices = .qualityMetrics)),
                           
                         tabPanel(title = "Alpha", value = "alpha",
                       
                             selectInput(inputId = "alpha.index",
-                                label = "Metric:", multiple = TRUE,
+                                label = "Metrics:", multiple = TRUE,
                                 choices = .alphaMetrics)),
 
                         tabPanel(title = "Beta", value = "beta",

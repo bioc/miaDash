@@ -212,17 +212,37 @@
 
 #' @rdname create_observers
 #' @importFrom stats as.formula
-#' @importFrom mia addAlpha runNMDS runRDA getDissimilarity
+#' @importFrom mia addAlpha runNMDS runRDA getDissimilarity addHierarchyTree
+#'   addPrevalence addPrevalentAbundance
 #' @importFrom TreeSummarizedExperiment rowTree
 #' @importFrom scater runMDS runPCA
+#' @importFrom scuttle addPerCellQC
 #' @importFrom vegan vegdist
 .create_estimate_observers <- function(input, rObjects) {
   
     # nocov start
     observeEvent(input$compute, {
         
-        if( input$estimate == "alpha" ){
-          
+        if( input$estimate == "quality" ){
+        
+            isolate({
+                req(input$estimate.assay)
+        
+                for( qmetric in input$quality.metrics ){
+                
+                    qfun <- eval(parse(text = paste0("add", qmetric)))
+                    
+                    qfun_args <- list(x = rObjects$tse,
+                        assay.type = input$estimate.assay)
+                
+                    rObjects$tse <- .update_tse(rObjects$tse, qfun, qfun_args)
+                
+                }
+        
+            })
+        
+        }else if( input$estimate == "alpha" ){
+        
             if( is.null(input$alpha.index) ){
                 .print_message("Please select one or more metrics.")
                 return()
@@ -230,13 +250,13 @@
         
             isolate({
                 req(input$estimate.assay)
-              
+            
                 if( input$estimate.name != "" ){
                     name <- input$estimate.name
                 } else {
                     name <- input$alpha.index
                 }
-          
+            
                 fun_args <- list(x = rObjects$tse, name = name,
                     assay.type = input$estimate.assay, index = input$alpha.index)
                 
@@ -333,9 +353,6 @@
               choices = taxonomyRanks(rObjects$tse))
           
           updateSelectInput(session, inputId = "assay.type",
-              choices = assayNames(rObjects$tse))
-          
-          updateSelectInput(session, inputId = "estimate.assay",
               choices = assayNames(rObjects$tse))
           
           updateSelectInput(session, inputId = "estimate.assay",

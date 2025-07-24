@@ -11,7 +11,7 @@
 \usage{
 .import_datasets(selection)
 
-.update_tse(tse, fun, fun.args)
+.update_tse(tse, fun, fun.args = list())
 
 .print_message(..., title = "Invalid input:")
 

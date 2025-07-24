@@ -51,3 +51,8 @@ NULL
 #' @rdname constants
 .betaMethods <- c("MDS", "NMDS", "PCA", "RDA")
 #"TSNE", "UMAP")
+
+#' @rdname constants
+.qualityMetrics <- list("Library size" = "PerCellQC",
+    "Prevalence" = "Prevalence", "Prevalent abundance" = "PrevalentAbundance",
+    "Hierarchy tree" = "HierarchyTree")
