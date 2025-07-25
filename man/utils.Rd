@@ -7,6 +7,8 @@
 \alias{.print_message}
 \alias{.set_optarg}
 \alias{.check_formula}
+\alias{.importBIOM}
+\alias{.rownames2taxa}
 \title{miaDash utilities}
 \usage{
 .import_datasets(selection)
@@ -18,6 +20,10 @@
 .set_optarg(item, loader = NULL, alternative = NULL, ...)
 
 .check_formula(form, tse)
+
+.importBIOM(file, col.data = NULL, tree.file = NULL, ...)
+
+.rownames2taxa(x)
 }
 \arguments{
 \item{selection}{\code{Numeric vector}. A list of indices for the mia

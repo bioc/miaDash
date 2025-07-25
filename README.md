@@ -13,7 +13,7 @@ manipulate, analyse and visualise TreeSummarizedExperiment objects.
 
 miaDash is available online at [this address](https://miadash-microbiome.2.rahtiapp.fi/).
 While suitable for small and medium datasets, the online version may slow down
-when larger datasets are analysed (> 1000 features). In this case, the app can
+when larger datasets are analysed (> 500 samples). In this case, the app can
 be installed and run locally. Either way, functionality to subset and
 agglomerate the data is also provided in the app.
 

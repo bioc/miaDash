@@ -53,6 +53,7 @@ Constant values used throughout the miaDash app.
 \item{\code{.alphaMetrics}}{List of alpha diversity metrics.}
 \item{\code{.betaMetrics}}{List of beta diversity metrics.}
 \item{\code{.betaMethods}}{List of beta diversity methods.}
+\item{\code{.qualityMetrics}}{List of metrics for quality control.}
 }
 }
 
