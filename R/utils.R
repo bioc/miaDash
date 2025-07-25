@@ -118,6 +118,7 @@ NULL
     return(cond)
 }
 
+#' @rdname utils
 #' @importFrom mia importBIOM
 #' @importFrom SummarizedExperiment colData
 #' @importFrom TreeSummarizedExperiment rowTree
@@ -139,4 +140,24 @@ NULL
     }
   
     return(tse)
+}
+
+#' @rdname utils
+#' @importFrom SummarizedExperiment rowData
+#' @importFrom S4Vectors DataFrame
+#' @importFrom mia getTaxonomyLabels
+.rownames2taxa <- function(x){
+
+    tax_df <- data.frame(Taxonomy = rownames(x))
+      
+    rowdata <- mia:::.parse_taxonomy(
+        tax_df,
+        col.name = "Taxonomy",
+        removeTaxaPrefixes = TRUE
+    )
+
+    rowData(x) <- DataFrame(rowdata)
+    rownames(x) <- getTaxonomyLabels(x, make.unique = TRUE)
+    
+    return(x)
 }

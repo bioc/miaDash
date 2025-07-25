@@ -1,5 +1,5 @@
 Package: miaDash
-Version: 1.1.3
+Version: 1.1.4
 Authors@R: 
     c(person(given = "Giulio", family = "Benedetti", role = c("aut", "cre"),
            email = "giulio.benedetti@utu.fi",
@@ -33,6 +33,7 @@ Imports:
     scuttle,
     shinydashboard,
     shinyjs,
+    shinyWidgets,
     S4Vectors,
     SingleCellExperiment,
     SummarizedExperiment,

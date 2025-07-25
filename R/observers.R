@@ -14,7 +14,7 @@
 #' @keywords internal
 
 #' @rdname create_observers
-#' @importFrom utils read.csv
+#' @importFrom utils read.table
 #' @importFrom ape read.tree
 #' @importFrom S4Vectors DataFrame
 #' @importFrom mia importHUMAnN importMetaPhlAn importQIIME2 importMothur
@@ -40,18 +40,20 @@
       
             isolate({
                 req(input$assay)
-        
-                assay_list <- lapply(input$assay$datapath,
-                    function(x) as.matrix(read.csv(x, row.names = 1)))
                 
-                names(assay_list) <- gsub(".csv", "", input$assay$name)
+                assay_list <- lapply(input$assay$datapath,
+                    function(x) as.matrix(read.table(x, row.names = 1,
+                        header = TRUE, sep = "\t")))
+                
+                names(assay_list) <- gsub(".tsv", "", input$assay$name)
                 
                 coldata <- .set_optarg(input$coldata$datapath,
                     alternative = DataFrame(row.names = colnames(assay_list[[1]])),
-                    loader = read.csv, row.names = 1)
+                    loader = read.table, row.names = 1, header = TRUE, sep = "\t")
 
                 rowdata <- .set_optarg(input$rowdata$datapath,
-                    loader = read.csv, row.names = 1)
+                    loader = read.table, row.names = 1,
+                    header = TRUE, sep = "\t")
                
                 row.tree <- .set_optarg(input$row.tree$datapath,
                     loader = read.tree)
@@ -65,6 +67,14 @@
                 rObjects$tse <- .update_tse(
                      rObjects$tse, TreeSummarizedExperiment, fun_args
                 )
+                print(input$taxa.from.rownames)
+                if( input$taxa.from.rownames ){
+                  
+                    rObjects$tse <- .update_tse(
+                        rObjects$tse, .rownames2taxa, list(x = rObjects$tse)
+                    )
+                    
+                }
             
             })
       

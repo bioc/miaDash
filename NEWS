@@ -1,3 +1,7 @@
+Changes in version 1.1.4
+* Switch from csv to tsv support
+* Improve interoperability with MGnify datasets
+
 Changes in version 1.1.3
 * Introduced tab for Quality Control
 

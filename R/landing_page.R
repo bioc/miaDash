@@ -14,6 +14,7 @@
 #'   dashboardBody box
 #' @importFrom htmltools HTML br tags div tagList
 #' @importFrom shinyjs disable
+#' @importFrom shinyWidgets addSpinner
 #' @importFrom utils data
 .landing_page <- function(FUN, input, output, session) {
   
@@ -49,16 +50,16 @@
                         tabPanel(title = "Raw Data", value = "raw", br(),
                                    
                             fileInput(inputId = "assay", label = "Assays:",
-                                accept = ".csv", multiple = TRUE,
-                                placeholder = "assay.csv"),
+                                accept = ".tsv", multiple = TRUE,
+                                placeholder = "assay.tsv"),
                             div(style = "margin-top: -20px"),
                                    
                             fileInput(inputId = "coldata", label = "colData:",
-                                accept = ".csv", placeholder = "coldata.csv"),
+                                accept = ".tsv", placeholder = "coldata.tsv"),
                             div(style = "margin-top: -20px"),
                         
                             fileInput(inputId = "rowdata", label = "rowData:",
-                                accept = ".csv", placeholder = "rowdata.csv"),
+                                accept = ".tsv", placeholder = "rowdata.tsv"),
                             div(style = "margin-top: -20px"),
                             
                             fileInput(inputId = "row.tree",
@@ -69,7 +70,10 @@
                             fileInput(inputId = "col.tree",
                                   label = "colTree:", placeholder = "col.tree",
                                   accept = c(".tree", ".tre")),
-                            div(style = "margin-top: -20px")),
+                            div(style = "margin-top: -20px"),
+                            
+                            checkboxInput(inputId = "taxa.from.rownames",
+                                label = "Derive rowData from assay rownames")),
                           
                         tabPanel(title = "Foreign", value = "foreign", br(),
                                   
@@ -237,7 +241,8 @@
                 box(id = "output.panel", title = "Output", width = 8,
                     status = "primary", solidHeader = TRUE, collapsible = TRUE,
 
-                    verbatimTextOutput(outputId = "object"),
+                    addSpinner(verbatimTextOutput(outputId = "object"),
+                        color = "#007bff"),
               
                     downloadButton(outputId = "download", label = "Download",
                         class = "btn-primary")))))})

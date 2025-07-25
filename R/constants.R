@@ -10,6 +10,7 @@
 #' \item{\code{.alphaMetrics}}{List of alpha diversity metrics.}
 #' \item{\code{.betaMetrics}}{List of beta diversity metrics.}
 #' \item{\code{.betaMethods}}{List of beta diversity methods.}
+#' \item{\code{.qualityMetrics}}{List of metrics for quality control.}
 #' }
 #'
 #' @author Giulio Benedetti
@@ -17,7 +18,7 @@
 #' @keywords internal
 #' @name constants
 #' @aliases .miaDashDefaultPanels .miaDashOtherPanels .transformMethods
-#' .alphaMetrics .betaMetrics .betaMethods
+#' .alphaMetrics .betaMetrics .betaMethods .qualityMetrics
 NULL
 
 #' @rdname constants
