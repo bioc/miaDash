@@ -1,3 +1,6 @@
+Changes in version 1.1.5
+* Added Cluster tab
+
 Changes in version 1.1.4
 * Switch from csv to tsv support
 * Improve interoperability with MGnify datasets
