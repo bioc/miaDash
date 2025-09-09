@@ -93,7 +93,8 @@
                             div(style = "margin-top: -20px"),
                             
                             conditionalPanel(
-                                condition = "input.ftype == 'Mothur' | input.ftype == 'QIIME2'",
+                                condition = paste0("input.ftype == 'Mothur' | ",
+                                    "input.ftype == 'QIIME2'"),
                                
                                 fileInput(inputId = "f.rowdata",
                                     label = "rowData:", accept = c(".taxonomy",
@@ -101,7 +102,8 @@
                                 div(style = "margin-top: -20px")),
                                 
                             conditionalPanel(
-                                condition = "input.ftype == 'biom' | input.ftype == 'MetaPhlAn'",
+                                condition = paste0("input.ftype == 'biom' | ",
+                                    "input.ftype == 'MetaPhlAn'"),
                                 
                                 fileInput(inputId = "tree.file",
                                     label = "rowTree:", placeholder = "tree.tree",
@@ -109,7 +111,8 @@
                                 div(style = "margin-top: -20px")),
                             
                             conditionalPanel(
-                                condition = "input.ftype == 'biom' | input.ftype == 'HUMAnN'",
+                                condition = paste0("input.ftype == 'biom' | ",
+                                    "input.ftype == 'HUMAnN'"),
                             
                                 checkboxInput(inputId = "rm.tax.pref",
                                     label = "Remove taxa prefixes")),
@@ -204,7 +207,7 @@
                                 inline = TRUE),
                       
                             conditionalPanel(
-                                condition = paste("input.bmethod == 'MDS' || ",
+                                condition = paste0("input.bmethod == 'MDS' || ",
                                     "input.bmethod == 'NMDS' || ",
                                     "input.bmethod == 'RDA'"),
                             
@@ -221,6 +224,49 @@
                             numericInput(inputId = "ncomponents", value = 5,
                                 label = "Number of components:", min = 1,
                                 step = 1)),
+                        
+                        tabPanel(title = "Cluster", value = "cluster",
+                                 
+                            radioButtons(inputId = "cmethod",
+                                label = "Method:", choices = .clustMethods,
+                                inline = TRUE),
+                            
+                            conditionalPanel(
+                                condition = paste0("input.cmethod == 'Dmm' | ",
+                                    "input.cmethod == 'Kmeans'"),
+                                
+                                numericInput(inputId = "kclusters", value = 3,
+                                    label = "Number of clusters:", min = 1,
+                                    step = 1)),
+                            
+                            conditionalPanel(
+                                condition = "input.cmethod == 'Dmm'",
+                              
+                                selectInput(inputId = "dmm.type",
+                                    label = "Criterion:",
+                                    choices = .DmmCriteria,
+                                    selected = .DmmCriteria[1]),
+                                
+                                numericInput(inputId = "dmm.seed", value = 1L,
+                                    label = "Seed:", min = 0, step = 1)),
+                            
+                            conditionalPanel(
+                                condition = "input.cmethod == 'NNGraph'",
+                              
+                                numericInput(inputId = "kneighbours",
+                                    value = 10, label = "Number of neighbours:",
+                                    min = 1, step = 1),
+                                
+                                checkboxInput(inputId = "nn.shared",
+                                    label = "Construct shared graph")),
+                            
+                            checkboxInput(inputId = "clust.full",
+                                label = "Add to metadata"),
+                            
+                            radioButtons(inputId = "clust.margin",
+                                label = "Margin:", inline = TRUE,
+                                choices = c("samples", "features"),
+                                selected = "features")),
                         
                         footer = textInput(inputId = "estimate.name",
                             label = "Name:")),
