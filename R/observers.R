@@ -67,7 +67,7 @@
                 rObjects$tse <- .update_tse(
                      rObjects$tse, TreeSummarizedExperiment, fun_args
                 )
-                print(input$taxa.from.rownames)
+                
                 if( input$taxa.from.rownames ){
                   
                     rObjects$tse <- .update_tse(
@@ -223,11 +223,12 @@
 #' @rdname create_observers
 #' @importFrom stats as.formula
 #' @importFrom mia addAlpha runNMDS runRDA getDissimilarity addHierarchyTree
-#'   addPrevalence addPrevalentAbundance
+#'   addPrevalence addPrevalentAbundance addCluster
 #' @importFrom TreeSummarizedExperiment rowTree
 #' @importFrom scater runMDS runPCA
 #' @importFrom scuttle addPerCellQC
 #' @importFrom vegan vegdist
+#' @importFrom bluster KmeansParam DmmParam HclustParam NNGraphParam
 .create_estimate_observers <- function(input, rObjects) {
   
     # nocov start
@@ -295,7 +296,8 @@
                     name <- input$bmethod
                 }
               
-                beta_args <- list(x = rObjects$tse, assay.type = input$assay.type,
+                beta_args <- list(x = rObjects$tse,
+                    assay.type = input$estimate.assay,
                     ncomponents = input$ncomponents, name = name)
               
                 if( input$beta.index == "unifrac" ){
@@ -329,7 +331,6 @@
                   
                     beta_args <- c(beta_args,
                         formula = as.formula(input$rda.formula))
-                  
                 }
                 
                 beta_fun <- eval(parse(text = paste0("run", input$bmethod)))
@@ -337,6 +338,51 @@
                 rObjects$tse <- .update_tse(rObjects$tse, beta_fun, beta_args)
             })
         
+        }else if( input$estimate == "cluster" ){
+            
+            isolate({
+                req(input$estimate.assay)
+                
+                if( input$estimate.name != "" ){
+                    name <- input$estimate.name
+                }else{
+                    name <- "clusters"
+                }
+                
+                if( input$cmethod == "Dmm" ){
+                
+                    blus_params <- list(k = input$kclusters,
+                        type = deparse(input$dmm.type))#, seed = input$dmm.seed)
+                
+                }else if( input$cmethod == "Hclust" ){
+                
+                    blus_params <- list()
+                
+                }else if( input$cmethod == "Kmeans" ){
+                
+                    blus_params <- list(centers = input$kclusters)
+                
+                }else if( input$cmethod == "NNGraph" ){
+                
+                    blus_params <- list(shared = input$nn.shared,
+                        k = input$kneighbours)
+                
+                }
+                
+                blus_params <- sprintf("%s=%s", names(blus_params), blus_params)
+                blus_params <- paste(blus_params, collapse = ", ")
+                blus_fun <- sprintf("%sParam(%s)", input$cmethod, blus_params)
+                
+                clust_args <- list(x = rObjects$tse,
+                    assay.type = input$estimate.assay,
+                    by = input$clust.margin, full = input$clust.full, 
+                    BLUSPARAM = eval(parse(text = blus_fun)),
+                    name = name, clust.col = name)
+                
+                rObjects$tse <- .update_tse(
+                    rObjects$tse, addCluster, clust_args)
+            })
+            
         }
         
     }, ignoreInit = TRUE, ignoreNULL = TRUE)

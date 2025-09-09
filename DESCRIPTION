@@ -25,6 +25,7 @@ Depends:
     shiny
 Imports:
     ape,
+    bluster,
     htmltools,
     iSEEtree (>= 1.1.4),
     mia,
@@ -50,6 +51,6 @@ Suggests:
 URL: https://github.com/microbiome/miaDash
 BugReports: https://github.com/microbiome/miaDash/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 Config/testthat/edition: 3

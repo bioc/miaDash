@@ -6,10 +6,12 @@
 \alias{.miaDashDefaultPanels}
 \alias{.miaDashOtherPanels}
 \alias{.transformMethods}
+\alias{.qualityMetrics}
 \alias{.alphaMetrics}
 \alias{.betaMetrics}
 \alias{.betaMethods}
-\alias{.qualityMetrics}
+\alias{.clustMethods}
+\alias{.DmmCriteria}
 \title{Constants}
 \format{
 An object of class \code{character} of length 7.
@@ -18,13 +20,17 @@ An object of class \code{character} of length 9.
 
 An object of class \code{character} of length 19.
 
+An object of class \code{list} of length 4.
+
 An object of class \code{character} of length 23.
 
 An object of class \code{character} of length 4.
 
 An object of class \code{character} of length 4.
 
-An object of class \code{list} of length 4.
+An object of class \code{character} of length 4.
+
+An object of class \code{character} of length 3.
 }
 \usage{
 .miaDashDefaultPanels
@@ -33,13 +39,17 @@ An object of class \code{list} of length 4.
 
 .transformMethods
 
+.qualityMetrics
+
 .alphaMetrics
 
 .betaMetrics
 
 .betaMethods
 
-.qualityMetrics
+.clustMethods
+
+.DmmCriteria
 }
 \description{
 Constant values used throughout the miaDash app.

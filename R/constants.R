@@ -18,7 +18,8 @@
 #' @keywords internal
 #' @name constants
 #' @aliases .miaDashDefaultPanels .miaDashOtherPanels .transformMethods
-#' .alphaMetrics .betaMetrics .betaMethods .qualityMetrics
+#' .qualityMetrics .alphaMetrics .betaMetrics .betaMethods .clustMethods
+#' .DmmCriteria
 NULL
 
 #' @rdname constants
@@ -35,6 +36,11 @@ NULL
 .transformMethods <- c("alr", "chi.square", "clr", "css", "frequency",
     "hellinger", "log", "log10", "log2", "max", "normalize", "pa",# "philr",
     "range", "rank", "rclr", "relabundance", "rrank", "standardize", "total")
+
+#' @rdname constants
+.qualityMetrics <- list("Library size" = "PerCellQC",
+    "Prevalence" = "Prevalence", "Prevalent abundance" = "PrevalentAbundance",
+    "Hierarchy tree" = "HierarchyTree")
 
 #' @rdname constants
 .alphaMetrics <- c("coverage_diversity", "fisher_diversity", "faith_diversity",
@@ -54,6 +60,7 @@ NULL
 #"TSNE", "UMAP")
 
 #' @rdname constants
-.qualityMetrics <- list("Library size" = "PerCellQC",
-    "Prevalence" = "Prevalence", "Prevalent abundance" = "PrevalentAbundance",
-    "Hierarchy tree" = "HierarchyTree")
+.clustMethods <- c("Dmm", "Hclust", "Kmeans", "NNGraph")
+
+#' @rdname constants
+.DmmCriteria <- c("laplace", "AIC", "BIC")
