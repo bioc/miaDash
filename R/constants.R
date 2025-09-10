@@ -17,9 +17,9 @@
 #' 
 #' @keywords internal
 #' @name constants
-#' @aliases .miaDashDefaultPanels .miaDashOtherPanels .transformMethods
-#' .qualityMetrics .alphaMetrics .betaMetrics .betaMethods .clustMethods
-#' .DmmCriteria
+#' @aliases .miaDashDefaultPanels .miaDashOtherPanels .foreignTypes
+#' .transformMethods .qualityMetrics .alphaMetrics .betaMetrics .betaMethods
+#' .clustMethods .DmmCriteria
 NULL
 
 #' @rdname constants
@@ -31,6 +31,9 @@ NULL
 .miaDashOtherPanels <- c("PrevalencePlot", "RDAPlot", "ScreePlot",
     "LoadingPlot", "ColumnTreePlot", "RowGraphPlot", "ColumnGraphPlot",
     "RowDataPlot", "ColumnDataPlot")
+
+#' @rdname constants
+.foreignTypes <- c("biom", "HUMAnN", "MetaPhlAn", "Mothur", "QIIME2")
 
 #' @rdname constants
 .transformMethods <- c("alr", "chi.square", "clr", "css", "frequency",
