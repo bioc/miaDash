@@ -33,7 +33,7 @@ NULL
     "RowDataPlot", "ColumnDataPlot")
 
 #' @rdname constants
-.foreignTypes <- c("biom", "HUMAnN", "MetaPhlAn", "Mothur", "QIIME2")
+.foreignTypes <- c("BIOM", "HUMAnN", "MetaPhlAn", "Mothur", "QIIME2")
 
 #' @rdname constants
 .transformMethods <- c("alr", "chi.square", "clr", "css", "frequency",

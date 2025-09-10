@@ -89,16 +89,12 @@
                 treefile <- .set_optarg(input$tree.file$datapath,
                     alternative = input$tree.file$datapath)
                 
-                if( input$ftype == "biom" ){
+                if( input$ftype == "BIOM" ){
 
                     fun_args <- list(file = input$main.file$datapath,
                         col.data = coldata, tree.file = treefile,
                         removeTaxaPrefixes = input$rm.tax.pref,
                         rankFromPrefix = input$rank.from.pref)
-                    
-                    rObjects$tse <- .update_tse(
-                        rObjects$tse, .importBIOM, fun_args
-                    )
               
                 }else if( input$ftype == "HUMAnN" ){
                 
@@ -106,36 +102,25 @@
                         col.data = coldata,
                         prefix.rm = input$rm.tax.pref,
                         remove.suffix = input$rm.hum.suf)
-                    
-                    rObjects$tse <- .update_tse(
-                        rObjects$tse, importHUMAnN, fun_args
-                    )
 
                 }else if( input$ftype == "MetaPhlAn" ){
 
                     fun_args <- list(file = input$main.file$datapath,
                         col.data = coldata, tree.file = treefile)
-              
-                    rObjects$tse <- .update_tse(
-                        rObjects$tse, importMetaPhlAn, fun_args
-                    )
                 
                 }else if( input$ftype %in% c("Mothur", "QIIME2") ){
-                  
-                    imp_fun <- eval(parse(text = paste0("import", input$ftype)))
                 
                     rowdata <- .set_optarg(input$f.rowdata$datapath,
                         alternative = input$f.rowdata$datapath)
                     
                     fun_args <- list(assay.file = input$main.file$datapath,
                         row.file = input, col.file = rowdata)
-                    
-                    rObjects$tse <- .update_tse(
-                        rObjects$tse, imp_fun, fun_args
-                    )
                 
                 }
-        
+                
+                imp_fun <- eval(parse(text = paste0("import", input$ftype)))
+                rObjects$tse <- .update_tse(rObjects$tse, imp_fun, fun_args)
+            
             })
             
         }
