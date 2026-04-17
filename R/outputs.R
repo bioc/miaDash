@@ -33,6 +33,6 @@
         content = function(file) saveRDS(rObjects$tse, file)
     )
     # nocov end
-  
+    
     invisible(NULL)
 }

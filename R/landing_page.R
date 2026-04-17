@@ -51,13 +51,12 @@
     disable("iSEE_INTERNAL_organize_panels")  # organize panels
     disable("iSEE_INTERNAL_link_graph")       # link graph
     disable("iSEE_INTERNAL_export_content")   # export content
-    disable("iSEE_INTERNAL_tracked_code")     # tracked code
     disable("iSEE_INTERNAL_panel_settings")   # panel settings
     disable("iSEE_INTERNAL_open_vignette")    # open vignette
     disable("iSEE_INTERNAL_session_info")     # session info
     disable("iSEE_INTERNAL_citation_info")    # citation info
     
-    rObjects <- reactiveValues(tse = NULL)
+    rObjects <- reactiveValues(tse = NULL, appMode = "analysis")
     
     observe({
         .print_message(
@@ -82,7 +81,9 @@
     .create_manipulate_observers(input, rObjects)
     .create_estimate_observers(input, rObjects)
     .update_observers(input, session, rObjects)
-
+    
+    # Overwrite iSEE general observers with miaDash original ones
+    .create_general_observers(input, session, rObjects, NULL) # pObjects
     .create_launch_observers(FUN, input, session, rObjects)
     
     .render_overview(output, rObjects)

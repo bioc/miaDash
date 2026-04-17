@@ -52,7 +52,7 @@ NULL
 
 #' @rdname utils
 .import_datasets <- function(selection) {
-  
+    
     mia_datasets <- data(package = "mia")
     mia_datasets <- mia_datasets$results[selection, "Item"]
     data(list = mia_datasets, package = "mia")
@@ -62,11 +62,24 @@ NULL
 
 #' @rdname utils
 .update_tse <- function(tse, fun, fun.args = list()) {
-
+    
+    fun_name <- as.name(fun)
+    
+    fun_call <- fun.args |>
+        append(fun_name, after = 0L) |>
+        as.call()
+    
     tse <- tryCatch({withCallingHandlers({
         
-        do.call(fun, fun.args)
-      
+        tse <- eval(fun_call)
+        
+        # Should use something like pObjects$memory
+        fun_call[["x"]] <- as.name("tse")
+        fun_call <- call("<-", as.name("tse"), fun_call)
+        attr(tse, "miaDash") <- c(attr(tse, "miaDash"), fun_call)
+        
+        return(tse)
+        
         # nocov start
         }, message = function(m) {
         
@@ -74,13 +87,13 @@ NULL
             invokeRestart("muffleMessage")
         
         })}, error = function(e) {
-      
+        
             .print_message(e, title = "Unexpected error:")
             return(tse)
-          
+        
         })
         # nocov end
-  
+    
     return(tse)
 }
 
@@ -97,23 +110,23 @@ NULL
 
 #' @rdname utils
 .set_optarg <- function(item, loader = NULL, alternative = NULL, ...){
-  
+    
     if( !(is.null(item) || is.null(loader)) ){
         out <- loader(item, ...)
     } else {
         out <- alternative
     }
-  
+    
     return(out)
 }
 
 #' @rdname utils
 #' @importFrom SummarizedExperiment colData
 .check_formula <- function(form, tse){
-  
+    
     form <- gsub("data ~\\s*", "", form)
     vars <- unlist(strsplit(form, "\\s*[\\+|\\*]\\s*"))
-  
+    
     cond <- all(vars %in% names(colData(tse)))
     return(cond)
 }

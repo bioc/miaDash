@@ -46,13 +46,11 @@ miaDash <- function() {
   
     initial <- lapply(initial, function(x) eval(parse(text = paste0(x, "()"))))
     initial <- .check_all_panels(tse, initial)
-  
     FUN(SE = tse, INIT = initial)
-  
+    
     enable("iSEE_INTERNAL_organize_panels")  # organize panels
     enable("iSEE_INTERNAL_link_graph")       # link graph
     enable("iSEE_INTERNAL_export_content")   # export content
-    enable("iSEE_INTERNAL_tracked_code")     # tracked code
     enable("iSEE_INTERNAL_panel_settings")   # panel settings
     enable("iSEE_INTERNAL_open_vignette")    # open vignette
     enable("iSEE_INTERNAL_session_info")     # session info

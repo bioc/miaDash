@@ -26,21 +26,21 @@
     observeEvent(input$import, {
       
         if( input$format == "dataset" ){
-      
+        
             rObjects$tse <- isolate(get(input$data))
-      
+        
         }else if( input$format == "rds" ){
-      
+        
             isolate({
                 req(input$file)
                 rObjects$tse <- readRDS(input$file$datapath)
             })
-      
+        
         }else if( input$format == "raw" ){
-      
+        
             isolate({
                 req(input$assay)
-                
+                 
                 assay_list <- lapply(input$assay$datapath,
                     function(x) as.matrix(read.table(x, row.names = 1,
                         header = TRUE, sep = "\t")))
@@ -118,7 +118,7 @@
                 
                 }
                 
-                imp_fun <- eval(parse(text = paste0("import", input$ftype)))
+                imp_fun <- paste0("import", input$ftype)
                 rObjects$tse <- .update_tse(rObjects$tse, imp_fun, fun_args)
             
             })
@@ -146,9 +146,9 @@
                 req(input$subassay)
               
                 if( input$subkeep == "prevalent" ){
-                    subset_fun <- subsetByPrevalent
+                    subset_fun <- "subsetByPrevalent"
                 } else if( input$subkeep == "rare" ){
-                    subset_fun <- subsetByRare
+                    subset_fun <- "subsetByRare"
                 }
             
                 fun_args <- list(x = rObjects$tse, assay.type = input$subassay,
@@ -159,14 +159,14 @@
             })
           
         }
-      
+        
         else if( input$manipulate == "agglomerate" ){
           
             isolate({
                 
                 fun_args <- list(x = rObjects$tse, rank = input$taxrank)
                 rObjects$tse <- .update_tse(
-                     rObjects$tse, agglomerateByRank, fun_args
+                     rObjects$tse, "agglomerateByRank", fun_args
                 )
               
             })
@@ -192,7 +192,7 @@
                 #}
                 
                 rObjects$tse <- .update_tse(
-                     rObjects$tse, transformAssay, fun_args
+                     rObjects$tse, "transformAssay", fun_args
                 )
                 
             })
@@ -256,7 +256,7 @@
                 fun_args <- list(x = rObjects$tse, name = name,
                     assay.type = input$estimate.assay, index = input$alpha.index)
                 
-                rObjects$tse <- .update_tse(rObjects$tse, addAlpha, fun_args)
+                rObjects$tse <- .update_tse(rObjects$tse, "addAlpha", fun_args)
           
             })
         
@@ -318,8 +318,7 @@
                         formula = as.formula(input$rda.formula))
                 }
                 
-                beta_fun <- eval(parse(text = paste0("run", input$bmethod)))
-                
+                beta_fun <- paste0("run", input$bmethod)
                 rObjects$tse <- .update_tse(rObjects$tse, beta_fun, beta_args)
             })
         
@@ -365,7 +364,7 @@
                     name = name, clust.col = name)
                 
                 rObjects$tse <- .update_tse(
-                    rObjects$tse, addCluster, clust_args)
+                    rObjects$tse, "addCluster", clust_args)
             })
             
         }
@@ -405,15 +404,44 @@
       }
     
     })
+    # nocov end
     
-    observeEvent(input$iSEE_INTERNAL_tour_steps, {
+    invisible(NULL)
+}
+
+#' @importFrom shinyAce aceEditor
+.create_general_observers <- function(input, session, rObjects, pObjects){
+    
+    observeEvent(input$launch, {
+        
+        rObjects$appMode <- "visualisation"
+        
+    }, ignoreInit = TRUE)
+    
+    observeEvent(input[["iSEE_INTERNAL_tour_steps"]], {
+        req(rObjects$appMode == "analysis")
       
         introjs(session, options = list(steps = .landing_page_tour))
       
     }, ignoreInit = TRUE)
-    # nocov end
     
-    invisible(NULL)
+    observeEvent(input[["iSEE_INTERNAL_tracked_code"]], {
+        req(rObjects$appMode == "analysis")
+        
+        #all_cmds <- .track_it_all(pObjects, se_name, ecm_name, mod_commands)
+        all_cmds <- paste("hello world", collapse = "\n")
+        
+        showModal(modalDialog(title = "Analytical worklow", size = "l",
+                footer = NULL, easyClose = TRUE,
+            
+                p("description"),
+                
+                aceEditor("iSEE_INTERNAL_tracked_code", mode = "r",
+                    theme = "xcode", autoComplete = "live",
+                    value = all_cmds, height = "600px")
+        ))
+    }, ignoreInit = TRUE)
+    
 }
 
 #' @rdname create_observers
@@ -421,9 +449,9 @@
   
     # nocov start
     observeEvent(input$launch, {
-    
+        
         .launch_isee(FUN, input$panels, session, rObjects)
-
+        
     }, ignoreInit = TRUE, ignoreNULL = TRUE)
     # nocov end
   
