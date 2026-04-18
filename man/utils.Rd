@@ -11,9 +11,9 @@
 \alias{.rownames2taxa}
 \title{miaDash utilities}
 \usage{
-.import_datasets(selection)
+.import_datasets()
 
-.update_tse(tse, fun, fun.args = list())
+.update_tse(rObjects, pObjects, fun, fun.args = list())
 
 .print_message(..., title = "Invalid input:")
 
@@ -26,13 +26,6 @@
 .rownames2taxa(x)
 }
 \arguments{
-\item{selection}{\code{Numeric vector}. A list of indices for the mia
-datasets to return.}
-
-\item{tse}{a
-\code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-constructor]{TreeSummarizedExperiment}}
-object.}
-
 \item{fun}{\code{Function scalar}. Function to apply to \code{tse}.}
 
 \item{fun.args}{\code{Named list}. A list of arguments to pass to \code{fun}.}
@@ -53,6 +46,13 @@ should be loaded.}
 \code{item} and \code{loader} are not defined. (Default: \code{NULL})}
 
 \item{form}{\code{Character scalar} The formula to be checked.}
+
+\item{tse}{a
+\code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-constructor]{TreeSummarizedExperiment}}
+object.}
+
+\item{selection}{\code{Numeric vector}. A list of indices for the mia
+datasets to return.}
 }
 \value{
 \itemize{

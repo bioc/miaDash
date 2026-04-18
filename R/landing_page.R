@@ -18,8 +18,8 @@
 #' @importFrom utils data
 .landing_page <- function(FUN, input, output, session) {
     # nocov start
-    mia_datasets <- .import_datasets(-c(2, 5))
-  
+    mia_datasets <- .import_datasets()
+    
     output$allPanels <- renderUI({
 
         dashboardPage(
@@ -58,6 +58,9 @@
     
     rObjects <- reactiveValues(tse = NULL, appMode = "analysis")
     
+    pObjects <- new.env()
+    pObjects$commands <- c()
+    
     observe({
         .print_message(
             title = "Welcome to the Microbiome Analysis Dashboard! \U0001f9a0",
@@ -78,12 +81,12 @@
     })
     
     .create_import_observers(input, rObjects)
-    .create_manipulate_observers(input, rObjects)
-    .create_estimate_observers(input, rObjects)
+    .create_manipulate_observers(input, rObjects, pObjects)
+    .create_estimate_observers(input, rObjects, pObjects)
     .update_observers(input, session, rObjects)
     
     # Overwrite iSEE general observers with miaDash original ones
-    .create_general_observers(input, session, rObjects, NULL) # pObjects
+    .create_general_observers(input, session, rObjects, pObjects)
     .create_launch_observers(FUN, input, session, rObjects)
     
     .render_overview(output, rObjects)
@@ -221,17 +224,23 @@
                     choices = NULL)),
                   
             tabPanel(title = "Transform", value = "transform", br(),
-                  
+                
                 selectInput(inputId = "assay.type", label = "Assay:",
                     choices = NULL),
-              
-                selectInput(inputId = "trans.method", label = "Method:",
+                
+                selectInput(inputId = "trans_method", label = "Method:",
                     choices = .transformMethods),
-              
+                
+                conditionalPanel(
+                    condition = "input.trans_method == 'philr'",
+                    
+                    selectInput(inputId = "trans.tree", label = "Tree:",
+                        choices = NULL)),
+                
                 checkboxInput(inputId = "pseudocount", label = "Pseudocount"),
-              
+                
                 textInput(inputId = "assay.name", label = "Name:"),
-                      
+                
                 radioButtons(inputId = "margin", label = "Margin:",
                     choices = c("samples", "features"), inline = TRUE))),
               
@@ -269,18 +278,18 @@
                 conditionalPanel(
                     condition = paste0("input.bmethod == 'MDS' || ",
                         "input.bmethod == 'NMDS' || input.bmethod == 'RDA'"),
-                            
+                     
                     selectInput(inputId = "beta.index", label = "Metric:",
                         choices = .betaMetrics)),
-                      
+                    
                 conditionalPanel(condition = "input.bmethod == 'RDA'",
-                            
+                    
                     textInput(inputId = "rda.formula", label = "Formula:",
                         placeholder = "data ~ var1 + var2 * var3")),
-                      
+                    
                     numericInput(inputId = "ncomponents", value = 5,
                         label = "Number of components:", min = 1, step = 1)),
-                        
+                    
             tabPanel(title = "Cluster", value = "cluster",
                                  
                 radioButtons(inputId = "cmethod", label = "Method:",

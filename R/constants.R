@@ -37,7 +37,7 @@ NULL
 
 #' @rdname constants
 .transformMethods <- c("alr", "chi.square", "clr", "css", "frequency",
-    "hellinger", "log", "log10", "log2", "max", "normalize", "pa",# "philr",
+    "hellinger", "log", "log10", "log2", "max", "normalize", "pa", "philr",
     "range", "rank", "rclr", "relabundance", "rrank", "standardize", "total")
 
 #' @rdname constants

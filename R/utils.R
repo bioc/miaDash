@@ -51,17 +51,20 @@
 NULL
 
 #' @rdname utils
-.import_datasets <- function(selection) {
+.import_datasets <- function() {
     
     mia_datasets <- data(package = "mia")
-    mia_datasets <- mia_datasets$results[selection, "Item"]
+    mia_datasets <- mia_datasets$results[ , "Item"]
     data(list = mia_datasets, package = "mia")
+    
+    classes <- vapply(mia_datasets, function(x) class(get(x)), character(1L))
+    mia_datasets <- mia_datasets[classes == "TreeSummarizedExperiment"]
     
     return(mia_datasets)
 }
 
 #' @rdname utils
-.update_tse <- function(tse, fun, fun.args = list()) {
+.update_tse <- function(rObjects, pObjects, fun, fun.args = list()) {
     
     fun_name <- as.name(fun)
     
@@ -73,10 +76,9 @@ NULL
         
         tse <- eval(fun_call)
         
-        # Should use something like pObjects$memory
-        fun_call[["x"]] <- as.name("tse")
+        fun_call[[2L]] <- as.name("tse")
         fun_call <- call("<-", as.name("tse"), fun_call)
-        attr(tse, "miaDash") <- c(attr(tse, "miaDash"), fun_call)
+        pObjects$commands <- c(pObjects$commands, fun_call)
         
         return(tse)
         
@@ -87,10 +89,12 @@ NULL
             invokeRestart("muffleMessage")
         
         })}, error = function(e) {
-        
+            # Remove eventual calls to prevent breaking the session
+            class(e) <- setdiff(class(e), "call")
+            attr(e, "call") <- NULL
+            
             .print_message(e, title = "Unexpected error:")
-            return(tse)
-        
+            return(rObjects$tse)
         })
         # nocov end
     

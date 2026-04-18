@@ -21,7 +21,7 @@ An object of class \code{character} of length 9.
 
 An object of class \code{character} of length 5.
 
-An object of class \code{character} of length 19.
+An object of class \code{character} of length 20.
 
 An object of class \code{list} of length 4.
 

@@ -11,9 +11,9 @@
 \usage{
 .create_import_observers(input, rObjects)
 
-.create_manipulate_observers(input, rObjects)
+.create_manipulate_observers(input, rObjects, pObjects)
 
-.create_estimate_observers(input, rObjects)
+.create_estimate_observers(input, rObjects, pObjects)
 
 .update_observers(input, session, rObjects)
 
