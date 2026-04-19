@@ -20,7 +20,7 @@
 #' @importFrom mia importHUMAnN importMetaPhlAn importQIIME2 importMothur
 #'   addAlpha
 #' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment
-.create_import_observers <- function(input, rObjects) {
+.create_import_observers <- function(input, rObjects, pObjects){
 
     # nocov start
     observeEvent(input$import, {
@@ -64,8 +64,8 @@
                 fun_args <- list(assays = assay_list, colData = coldata,
                     rowData = rowdata, rowTree = row.tree, colTree = col.tree)
         
-                #rObjects$tse <- .update_tse(
-                #     rObjects, pObjects, "TreeSummarizedExperiment", fun_args)
+                rObjects$tse <- .update_tse(
+                     rObjects, pObjects, "TreeSummarizedExperiment", fun_args)
                 
                 if( input$taxa.from.rownames ){
                     
@@ -365,33 +365,30 @@
     # nocov start
     observe({
       
-      if( isS4(rObjects$tse) ){
+        if( isS4(rObjects$tse) ){
         
-          updateSelectInput(session, inputId = "subassay",
-              choices = assayNames(rObjects$tse))
-        
-          updateSelectInput(session, inputId = "taxrank",
-              choices = rev(taxonomyRanks(rObjects$tse)))
+            updateSelectInput(session, inputId = "subassay",
+                choices = assayNames(rObjects$tse))
           
-          updateSelectInput(session, inputId = "assay.type",
-              choices = assayNames(rObjects$tse))
-          
-          updateSelectInput(session, inputId = "trans.tree",
-              choices = switch(input$margin,
-              features = rowTreeNames(rObjects$tse),
-              samples = colTreeNames(rObjects$tse)))
-          
-          updateSelectInput(session, inputId = "estimate.assay",
-              choices = assayNames(rObjects$tse))
-          
-          updateNumericInput(session, inputId = "ncomponents",
-              max = nrow(rObjects$tse) - 1)
-        
-      }
-    
+            updateSelectInput(session, inputId = "taxrank",
+                choices = rev(taxonomyRanks(rObjects$tse)))
+            
+            updateSelectInput(session, inputId = "assay.type",
+                choices = assayNames(rObjects$tse))
+            
+            updateSelectInput(session, inputId = "trans.tree",
+                choices = switch(input$margin,
+                features = rowTreeNames(rObjects$tse),
+                samples = colTreeNames(rObjects$tse)))
+            
+            updateSelectInput(session, inputId = "estimate.assay",
+                choices = assayNames(rObjects$tse))
+            
+            updateNumericInput(session, inputId = "ncomponents",
+                max = nrow(rObjects$tse) - 1)
+        }
     })
     # nocov end
-    
     invisible(NULL)
 }
 
@@ -403,6 +400,27 @@
         rObjects$appMode <- "visualisation"
     }, ignoreInit = TRUE)
     
+    observeEvent(input[["iSEE_INTERNAL_export_content"]], {
+        req(rObjects$appMode == "analysis")
+        
+        .print_message(title = "Export dataset", size = "l",
+            
+            radioButtons(inputId = "export_format", label = "Format:",
+               inline = TRUE, choices = .exportFormats),
+            
+            conditionalPanel(condition = "input.export_format != 'TreeSE'",
+                 
+                selectInput(inputId = "export.assay", label = "Assay:",
+                    choices = NULL)),
+            
+            downloadButton(outputId = "download", label = "Download",
+                class = "btn-primary"))
+           
+        updateSelectInput(session, inputId = "export.assay",
+            choices = assayNames(rObjects$tse))
+            
+    }, ignoreInit = TRUE)
+    
     observeEvent(input[["iSEE_INTERNAL_tracked_code"]], {
         req(rObjects$appMode == "analysis")
         
@@ -410,7 +428,7 @@
         commands <- paste(pObjects$commands, collapse = "\n\n")
         
         .print_message(title = "Analytical worklow", size = "l",
-            
+                
                 p("description"),
                 
                 aceEditor("iSEE_INTERNAL_tracked_code", mode = "r",
@@ -440,6 +458,14 @@
         .print_welcome_message()
     }, ignoreInit = TRUE)
     
+    observeEvent(input[["iSEE_INTERNAL_metadata_info"]], {
+        req(rObjects$appMode == "analysis" )
+        
+        browseURL(paste0("https://microbiome.github.io/mia/reference/",
+            input$data, ".html"))
+        
+    }, ignoreInit = TRUE)
+    
     observeEvent(input[["iSEE_INTERNAL_app_control"]], {
         req(rObjects$appMode == "analysis")
         stopApp(returnValue = invisible(NULL))
@@ -462,9 +488,10 @@
 
 .print_welcome_message <- function(){
     .print_message(
-        title = tagList("Welcome to the Microbiome Analysis Dashboard!",
-            tags$img(src = "assets/mia_logo.png", height = "40px")
-        ),
+        title = "Welcome to the Microbiome Analysis Dashboard! \U0001f9a0",
+        tags$img(src = "assets/mia_logo.png", height = "180px",
+            style = paste("display: block; margin-left: auto;",
+            "margin-right: auto; margin-bottom: 10px;")),
         "miaDash is actively maintained by the",
         tags$a(href = "https://datascience.utu.fi/",
         "Turku Data Science Group", target = "_blank", .noWS = "after"),

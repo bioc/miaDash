@@ -17,9 +17,9 @@
 #' 
 #' @keywords internal
 #' @name constants
-#' @aliases .miaDashDefaultPanels .miaDashOtherPanels .foreignTypes
-#' .transformMethods .qualityMetrics .alphaMetrics .betaMetrics .betaMethods
-#' .clustMethods .DmmCriteria
+#' @aliases .miaDashDefaultPanels .miaDashOtherPanels .foreignFormats
+#' .exportFormats .transformMethods .qualityMetrics .alphaMetrics .betaMetrics
+#' .betaMethods .clustMethods .DmmCriteria
 NULL
 
 #' @rdname constants
@@ -33,7 +33,10 @@ NULL
     "RowDataPlot", "ColumnDataPlot")
 
 #' @rdname constants
-.foreignTypes <- c("BIOM", "HUMAnN", "MetaPhlAn", "Mothur", "QIIME2")
+.foreignFormats <- c("BIOM", "HUMAnN", "MetaPhlAn", "Mothur", "QIIME2")
+
+#' @rdname constants
+.exportFormats <- c("TreeSE", "phyloseq", "BIOM", "QIIME2", "Mothur")
 
 #' @rdname constants
 .transformMethods <- c("alr", "chi.square", "clr", "css", "frequency",

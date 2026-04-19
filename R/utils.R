@@ -86,15 +86,20 @@ NULL
         # nocov start
         }, message = function(m) {
         
-            showNotification(conditionMessage(m))
+            showNotification(conditionMessage(m), type = "message")
             invokeRestart("muffleMessage")
         
+        }, warning = function(w) {
+            
+            showNotification(conditionMessage(w), type = "warning")
+            invokeRestart("muffleWarning")
+
         })}, error = function(e) {
             # Remove eventual calls to prevent breaking the session
             class(e) <- setdiff(class(e), "call")
             attr(e, "call") <- NULL
             
-            .print_message(e, title = "Unexpected error:")
+            .print_message(paste(e, collapse = " "))
             return(rObjects$tse)
         })
         # nocov end

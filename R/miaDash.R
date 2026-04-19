@@ -50,9 +50,7 @@ miaDash <- function() {
     
     enable("iSEE_INTERNAL_organize_panels")  # organize panels
     enable("iSEE_INTERNAL_link_graph")       # link graph
-    enable("iSEE_INTERNAL_export_content")   # export content
     enable("iSEE_INTERNAL_panel_settings")   # panel settings
-    enable("iSEE_INTERNAL_metadata_info")    # dataset info
     enable("iSEE_INTERNAL_draft_tour")       # tour draft
     
     invisible(NULL)

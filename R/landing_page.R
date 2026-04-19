@@ -1,7 +1,7 @@
 #' Landing page
 #' 
-#' \code{.landing_page} creates the landing page of miaDash, where TreeSE objects
-#' can be built and iSEE can be launched.
+#' \code{.landing_page} creates the landing page of miaDash, where TreeSE
+#' objects can be built and iSEE can be launched.
 #'
 #' @return The UI is defined by the function. A \code{NULL} value is invisibly
 #'   returned.
@@ -47,9 +47,7 @@
     ## Disable navbar buttons that are not linked to any observer yet
     disable("iSEE_INTERNAL_organize_panels")  # organize panels
     disable("iSEE_INTERNAL_link_graph")       # link graph
-    disable("iSEE_INTERNAL_export_content")   # export content
     disable("iSEE_INTERNAL_panel_settings")   # panel settings
-    disable("iSEE_INTERNAL_metadata_info")    # dataset info
     disable("iSEE_INTERNAL_draft_tour")       # tour draft
     
     rObjects <- reactiveValues(tse = NULL, appMode = "analysis")
@@ -59,17 +57,18 @@
     
     observe(.print_welcome_message())
     
-    .create_import_observers(input, rObjects)
+    .create_import_observers(input, rObjects, pObjects)
     .create_manipulate_observers(input, rObjects, pObjects)
     .create_estimate_observers(input, rObjects, pObjects)
-    .update_observers(input, session, rObjects)
-    
     # Overwrite iSEE general observers with miaDash original ones
     .create_general_observers(input, session, rObjects, pObjects)
+    # Update observers that depend on user input
+    .update_observers(input, session, rObjects)
+    
     .create_launch_observers(FUN, input, session, rObjects)
     
     .render_overview(output, rObjects)
-    .render_download(output, rObjects)
+    .render_download(input, output, rObjects)
 
     invisible(NULL)
     # nocov end
@@ -121,55 +120,55 @@
                     label = "Derive rowData from assay rownames")),
                   
             tabPanel(title = "Foreign", value = "foreign", br(),
-                           
-                radioButtons(inputId = "ftype", label = "Type:",
-                    choices = .foreignTypes, inline = TRUE),
-                           
+                     
+                radioButtons(inputId = "ftype", label = "Format:",
+                    choices = .foreignFormats, inline = TRUE),
+                  
                 fileInput(inputId = "main.file", label = "Main file:",
                     accept = c(".biom", ".tsv", ".shared", ".QZA", ".txt"),
                     placeholder = "biom, tsv, shared, QZA or txt"),
                 div(style = "margin-top: -20px"),
-                           
+                  
                 fileInput(inputId = "col.data", label = "colData:",
                     accept = c(".tsv", ".design"),
                     placeholder = "tsv or design"),
                 div(style = "margin-top: -20px"),
-                           
+                 
                 conditionalPanel(
                     condition = paste0("input.ftype == 'Mothur' | ",
                         "input.ftype == 'QIIME2'"),
-                             
+                      
                     fileInput(inputId = "f.rowdata", label = "rowData:",
                         accept = c(".taxonomy", ".qza"),
                         placeholder = "taxonomy or qza"),
                     div(style = "margin-top: -20px")),
-                           
+                
                 conditionalPanel(
                     condition = paste0("input.ftype == 'biom' | ",
                         "input.ftype == 'MetaPhlAn'"),
-                             
+                    
                     fileInput(inputId = "tree.file", label = "rowTree:",
                         placeholder = "tree.tree",
                         accept = c(".tree", ".tre", ".qza")),
                     div(style = "margin-top: -20px")),
-                           
+                
                 conditionalPanel(
                     condition = paste0("input.ftype == 'biom' | ",
                         "input.ftype == 'HUMAnN'"),
-                             
+                    
                     checkboxInput(inputId = "rm.tax.pref",
                         label = "Remove taxa prefixes")),
-                           
+                
                 conditionalPanel(condition = "input.ftype == 'biom'",
-                             
+                    
                     checkboxInput(inputId = "rank.from.pref",
                         label = "Derive taxa from prefixes")),
-                           
+                
                 conditionalPanel(condition = "input.ftype == 'HUMAnN'",
-                             
+                    
                     checkboxInput(inputId = "rm.hum.suf",
                         label = "Remove sample suffix")))),
-      
+        
         actionButton("import", "Upload", class = "btn-primary"))
     
     return(import_panel)
@@ -180,28 +179,28 @@
     # nocov start
     manipulate_panel <- box(id = "manipulate.panel", title = "Manipulate",
         width = 4, status = "primary", solidHeader = TRUE, collapsible = TRUE,
-
+        
         tabsetPanel(id = "manipulate",
             
             tabPanel(title = "Subset", value = "subset", br(),
-            
+                
                 radioButtons(inputId = "subkeep", label = "Keep:",
                     choices = c("prevalent", "rare"), inline = TRUE),
-                      
+                
                 selectInput(inputId = "subassay", label = "Assay:",
                     choices = NULL),
-                      
+                
                 sliderInput(inputId = "prevalence", value = 0, step = 0.01,
                     label = "Prevalence threshold:",  min = 0, max = 1),
-                      
+                
                 numericInput(inputId = "detection", value = 0, step = 1,
                     label = "Detection threshold:", min = 0)),
-                  
+                
             tabPanel(title = "Agglomerate", value = "agglomerate", br(),
-                  
+                
                 selectInput(inputId = "taxrank", label = "Taxonomic rank:",
                     choices = NULL)),
-                  
+                
             tabPanel(title = "Transform", value = "transform", br(),
                 
                 selectInput(inputId = "assay.type", label = "Assay:",
@@ -333,10 +332,7 @@
     output_panel <- box(id = "output.panel", title = "Output", width = 8,
         status = "primary", solidHeader = TRUE, collapsible = TRUE,
         
-        addSpinner(verbatimTextOutput(outputId = "object"), color = "#007bff"),
-        
-        downloadButton(outputId = "download", label = "Download",
-            class = "btn-primary"))
+        addSpinner(verbatimTextOutput(outputId = "object"), color = "#007bff"))
     
     return(output_panel)
     # nocov end

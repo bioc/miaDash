@@ -9,7 +9,7 @@
 \alias{.create_launch_observers}
 \title{Observers}
 \usage{
-.create_import_observers(input, rObjects)
+.create_import_observers(input, rObjects, pObjects)
 
 .create_manipulate_observers(input, rObjects, pObjects)
 
