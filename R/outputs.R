@@ -26,10 +26,10 @@
 
 #' @rdname render_output
 .render_download <- function(output, rObjects) {
-  
+    
     # nocov start
     output$download <- downloadHandler(
-        filename = function() paste0("se-", Sys.Date(), ".rds"),
+        filename = function() paste0("tse-", Sys.Date(), ".rds"),
         content = function(file) saveRDS(rObjects$tse, file)
     )
     # nocov end

@@ -357,6 +357,7 @@
 
 #' @rdname create_observers
 #' @importFrom SummarizedExperiment assayNames
+#' @importFrom TreeSummarizedExperiment rowTreeNames colTreeNames
 #' @importFrom mia taxonomyRanks
 #' @importFrom rintrojs introjs
 .update_observers <- function(input, session, rObjects){
@@ -376,7 +377,9 @@
               choices = assayNames(rObjects$tse))
           
           updateSelectInput(session, inputId = "trans.tree",
-              choices = rowTreeNames(rObjects$tse))
+              choices = switch(input$margin,
+              features = rowTreeNames(rObjects$tse),
+              samples = colTreeNames(rObjects$tse)))
           
           updateSelectInput(session, inputId = "estimate.assay",
               choices = assayNames(rObjects$tse))
@@ -392,20 +395,12 @@
     invisible(NULL)
 }
 
+#' @importFrom shiny stopApp
 #' @importFrom shinyAce aceEditor
 .create_general_observers <- function(input, session, rObjects, pObjects){
     
     observeEvent(input$launch, {
-        
         rObjects$appMode <- "visualisation"
-        
-    }, ignoreInit = TRUE)
-    
-    observeEvent(input[["iSEE_INTERNAL_tour_steps"]], {
-        req(rObjects$appMode == "analysis")
-      
-        introjs(session, options = list(steps = .landing_page_tour))
-      
     }, ignoreInit = TRUE)
     
     observeEvent(input[["iSEE_INTERNAL_tracked_code"]], {
@@ -414,18 +409,41 @@
         #all_cmds <- .track_it_all(pObjects, se_name, ecm_name, mod_commands)
         commands <- paste(pObjects$commands, collapse = "\n\n")
         
-        showModal(modalDialog(title = "Analytical worklow", size = "l",
-                footer = NULL, easyClose = TRUE,
+        .print_message(title = "Analytical worklow", size = "l",
             
                 p("description"),
                 
                 aceEditor("iSEE_INTERNAL_tracked_code", mode = "r",
-                    theme = "chrome", readOnly = TRUE,
-                    value = commands, height = "600px", wordWrap = TRUE)
-        ))
+                    theme = "chrome", readOnly = TRUE, value = commands,
+                    height = "600px", wordWrap = TRUE))
     
     }, ignoreInit = TRUE)
     
+    observeEvent(input[["iSEE_INTERNAL_tour_steps"]], {
+        req(rObjects$appMode == "analysis")
+        introjs(session, options = list(steps = .landing_page_tour))
+    }, ignoreInit = TRUE)
+    
+    observeEvent(input[["iSEE_INTERNAL_open_vignette"]], {
+        req(rObjects$appMode == "analysis")
+        browseURL("https://microbiome.github.io/miaDash/articles/miaDash.html")
+    }, ignoreInit = TRUE)
+    
+    observeEvent(input[["iSEE_INTERNAL_session_info"]], {
+        req(rObjects$appMode == "analysis")
+        .print_message(title = "Session information", size = "l",
+            pre(paste(capture.output(sessionInfo()), collapse = "\n")))
+    }, ignoreInit = TRUE)
+    
+    observeEvent(input[["iSEE_INTERNAL_citation_info"]], {
+        req(rObjects$appMode == "analysis")
+        .print_welcome_message()
+    }, ignoreInit = TRUE)
+    
+    observeEvent(input[["iSEE_INTERNAL_app_control"]], {
+        req(rObjects$appMode == "analysis")
+        stopApp(returnValue = invisible(NULL))
+    }, ignoreInit = TRUE)
 }
 
 #' @rdname create_observers
@@ -440,4 +458,28 @@
     # nocov end
   
     invisible(NULL)
+}
+
+.print_welcome_message <- function(){
+    .print_message(
+        title = tagList("Welcome to the Microbiome Analysis Dashboard!",
+            tags$img(src = "assets/mia_logo.png", height = "40px")
+        ),
+        "miaDash is actively maintained by the",
+        tags$a(href = "https://datascience.utu.fi/",
+        "Turku Data Science Group", target = "_blank", .noWS = "after"),
+        ", so we are happy to receive feedback from you. Feature requests,",
+        "bug reports and other comments can be submitted",
+        tags$a(href = "https://github.com/microbiome/miaDash/issues",
+        "here", target = "_blank", .noWS = "after"), HTML(".<br/><br/>"),
+        "If you are new to this app, you can learn how to use it with",
+        tags$a(href = "https://microbiome.github.io/miaDash/articles/miaDash.html",
+        "this short tutorial", target = "_blank", .noWS = "after"),
+        ". Technical support can be obtained on",
+        tags$a(href = "https://app.gitter.im/#/room/#microbiome_miaverse:gitter.im",
+        "our Gitter channel", target = "_blank", .noWS = "after"),
+        HTML(".<br/><br/>"), "If you use this package, please cite it with ",
+        "the following information:", HTML("<br/><br/>"),
+        pre(paste(capture.output(citation("miaDash")), collapse = "\n"))
+    )
 }

@@ -40,11 +40,8 @@
                     .define_visualise_panel(),
                     .define_output_panel()
                 )
-                
             )
-        
         )
-    
     })
     
     ## Disable navbar buttons that are not linked to any observer yet
@@ -52,33 +49,15 @@
     disable("iSEE_INTERNAL_link_graph")       # link graph
     disable("iSEE_INTERNAL_export_content")   # export content
     disable("iSEE_INTERNAL_panel_settings")   # panel settings
-    disable("iSEE_INTERNAL_open_vignette")    # open vignette
-    disable("iSEE_INTERNAL_session_info")     # session info
-    disable("iSEE_INTERNAL_citation_info")    # citation info
+    disable("iSEE_INTERNAL_metadata_info")    # dataset info
+    disable("iSEE_INTERNAL_draft_tour")       # tour draft
     
     rObjects <- reactiveValues(tse = NULL, appMode = "analysis")
     
     pObjects <- new.env()
     pObjects$commands <- c()
     
-    observe({
-        .print_message(
-            title = "Welcome to the Microbiome Analysis Dashboard! \U0001f9a0",
-            "miaDash is actively maintained by the",
-            tags$a(href = "https://datascience.utu.fi/",
-            "Turku Data Science Group", target = "_blank", .noWS = "after"),
-            ", so we are happy to receive feedback from you. Feature requests,",
-            "bug reports and other comments can be submitted",
-            tags$a(href = "https://github.com/microbiome/miaDash/issues",
-            "here", target = "_blank", .noWS = "after"), HTML(".<br/><br/>"),
-            "If you are new to this app, you can learn how to use it with",
-            tags$a(href = "https://microbiome.github.io/miaDash/articles/miaDash.html",
-            "this short tutorial", target = "_blank", .noWS = "after"),
-            ". Technical support can be obtained on",
-            tags$a(href = "https://app.gitter.im/#/room/#microbiome_miaverse:gitter.im",
-            "our Gitter channel", target = "_blank", .noWS = "after"), "." 
-        )
-    })
+    observe(.print_welcome_message())
     
     .create_import_observers(input, rObjects)
     .create_manipulate_observers(input, rObjects, pObjects)
@@ -108,7 +87,7 @@
             tabPanel(title = "Dataset", value = "dataset", br(),
                              
                 selectInput(inputId = "data", label = "Dataset:",
-                    choices = mia_datasets, selected = mia_datasets[1])),
+                    choices = mia_datasets, selected = mia_datasets[1L])),
                     
             tabPanel(title = "R Object", value = "rds", br(),
                              
@@ -242,7 +221,7 @@
                 textInput(inputId = "assay.name", label = "Name:"),
                 
                 radioButtons(inputId = "margin", label = "Margin:",
-                    choices = c("samples", "features"), inline = TRUE))),
+                    choices = c("features", "samples"), inline = TRUE))),
               
         actionButton("apply", "Apply", class = "btn-primary"))
     
@@ -353,9 +332,9 @@
     # nocov start
     output_panel <- box(id = "output.panel", title = "Output", width = 8,
         status = "primary", solidHeader = TRUE, collapsible = TRUE,
-      
+        
         addSpinner(verbatimTextOutput(outputId = "object"), color = "#007bff"),
-      
+        
         downloadButton(outputId = "download", label = "Download",
             class = "btn-primary"))
     
