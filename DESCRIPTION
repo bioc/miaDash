@@ -29,6 +29,7 @@ Imports:
     htmltools,
     iSEEtree (>= 1.1.4),
     mia,
+    rbiom,
     rintrojs,
     scater,
     scuttle,
