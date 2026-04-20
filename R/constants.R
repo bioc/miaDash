@@ -17,9 +17,9 @@
 #' 
 #' @keywords internal
 #' @name constants
-#' @aliases .miaDashDefaultPanels .miaDashOtherPanels .transformMethods
-#' .qualityMetrics .alphaMetrics .betaMetrics .betaMethods .clustMethods
-#' .DmmCriteria
+#' @aliases .miaDashDefaultPanels .miaDashOtherPanels .rdsFormats
+#' .foreignFormats .exportFormats .transformMethods .qualityMetrics
+#' .alphaMetrics .betaMetrics .betaMethods .clustMethods .DmmCriteria
 NULL
 
 #' @rdname constants
@@ -33,8 +33,17 @@ NULL
     "RowDataPlot", "ColumnDataPlot")
 
 #' @rdname constants
+.rdsFormats <- c("TreeSE", "phyloseq", "BIOM", "DADA2")
+
+#' @rdname constants
+.foreignFormats <- c("BIOM", "HUMAnN", "MetaPhlAn", "Mothur", "QIIME2")
+
+#' @rdname constants
+.exportFormats <- c("TreeSE", "phyloseq", "BIOM", "QIIME2", "Mothur")
+
+#' @rdname constants
 .transformMethods <- c("alr", "chi.square", "clr", "css", "frequency",
-    "hellinger", "log", "log10", "log2", "max", "normalize", "pa",# "philr",
+    "hellinger", "log", "log10", "log2", "max", "normalize", "pa", "philr",
     "range", "rank", "rclr", "relabundance", "rrank", "standardize", "total")
 
 #' @rdname constants

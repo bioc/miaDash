@@ -5,6 +5,9 @@
 \alias{constants}
 \alias{.miaDashDefaultPanels}
 \alias{.miaDashOtherPanels}
+\alias{.rdsFormats}
+\alias{.foreignFormats}
+\alias{.exportFormats}
 \alias{.transformMethods}
 \alias{.qualityMetrics}
 \alias{.alphaMetrics}
@@ -18,7 +21,13 @@ An object of class \code{character} of length 7.
 
 An object of class \code{character} of length 9.
 
-An object of class \code{character} of length 19.
+An object of class \code{character} of length 4.
+
+An object of class \code{character} of length 5.
+
+An object of class \code{character} of length 5.
+
+An object of class \code{character} of length 20.
 
 An object of class \code{list} of length 4.
 
@@ -36,6 +45,12 @@ An object of class \code{character} of length 3.
 .miaDashDefaultPanels
 
 .miaDashOtherPanels
+
+.rdsFormats
+
+.foreignFormats
+
+.exportFormats
 
 .transformMethods
 

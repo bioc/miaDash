@@ -51,36 +51,59 @@
 NULL
 
 #' @rdname utils
-.import_datasets <- function(selection) {
-  
+.import_datasets <- function() {
+    
     mia_datasets <- data(package = "mia")
-    mia_datasets <- mia_datasets$results[selection, "Item"]
+    mia_datasets <- mia_datasets$results[ , "Item"]
     data(list = mia_datasets, package = "mia")
     
+    classes <- vapply(mia_datasets, function(x) class(get(x)), character(1L))
+    mia_datasets <- mia_datasets[classes == "TreeSummarizedExperiment"]
+    
+    mia_datasets[c(1L, 2L)] <- mia_datasets[c(2L, 1L)]
     return(mia_datasets)
 }
 
 #' @rdname utils
-.update_tse <- function(tse, fun, fun.args = list()) {
-
+.update_tse <- function(rObjects, pObjects, fun, fun.args = list()) {
+    
+    fun_name <- as.name(fun)
+    
+    fun_call <- fun.args |>
+        append(fun_name, after = 0L) |>
+        as.call()
+    
     tse <- tryCatch({withCallingHandlers({
         
-        do.call(fun, fun.args)
-      
+        tse <- eval(fun_call)
+        
+        fun_call[[2L]] <- as.name("tse")
+        fun_call <- call("<-", as.name("tse"), fun_call)
+        pObjects$commands <- c(pObjects$commands, fun_call)
+        
+        return(tse)
+        
         # nocov start
         }, message = function(m) {
         
-            showNotification(conditionMessage(m))
+            showNotification(conditionMessage(m), type = "message")
             invokeRestart("muffleMessage")
         
+        }, warning = function(w) {
+            
+            showNotification(conditionMessage(w), type = "warning")
+            invokeRestart("muffleWarning")
+
         })}, error = function(e) {
-      
-            .print_message(e, title = "Unexpected error:")
-            return(tse)
-          
+            # Remove eventual calls to prevent breaking the session
+            class(e) <- setdiff(class(e), "call")
+            attr(e, "call") <- NULL
+            
+            .print_message(paste(e, collapse = " "))
+            return(rObjects$tse)
         })
         # nocov end
-  
+    
     return(tse)
 }
 
@@ -97,23 +120,23 @@ NULL
 
 #' @rdname utils
 .set_optarg <- function(item, loader = NULL, alternative = NULL, ...){
-  
+    
     if( !(is.null(item) || is.null(loader)) ){
         out <- loader(item, ...)
     } else {
         out <- alternative
     }
-  
+    
     return(out)
 }
 
 #' @rdname utils
 #' @importFrom SummarizedExperiment colData
 .check_formula <- function(form, tse){
-  
+    
     form <- gsub("data ~\\s*", "", form)
     vars <- unlist(strsplit(form, "\\s*[\\+|\\*]\\s*"))
-  
+    
     cond <- all(vars %in% names(colData(tse)))
     return(cond)
 }

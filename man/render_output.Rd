@@ -8,7 +8,7 @@
 \usage{
 .render_overview(output, rObjects)
 
-.render_download(output, rObjects)
+.render_download(input, output, rObjects)
 }
 \arguments{
 \item{output}{The Shiny output object from the server function.}

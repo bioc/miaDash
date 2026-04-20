@@ -12,7 +12,7 @@ The UI is defined by the function. A \code{NULL} value is invisibly
 returned.
 }
 \description{
-\code{.landing_page} creates the landing page of miaDash, where TreeSE objects
-can be built and iSEE can be launched.
+\code{.landing_page} creates the landing page of miaDash, where TreeSE
+objects can be built and iSEE can be launched.
 }
 \keyword{internal}
