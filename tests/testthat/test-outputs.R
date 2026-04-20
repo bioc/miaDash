@@ -4,7 +4,7 @@ test_that("outputs", {
     rObjects <- new.env()
   
     overview_out <- .render_overview(output, rObjects)
-    download_out <- .render_download(output, rObjects)
+    download_out <- .render_download(input, output, rObjects)
   
     expect_null(overview_out)
     expect_null(download_out)

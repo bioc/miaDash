@@ -17,9 +17,9 @@
 #' 
 #' @keywords internal
 #' @name constants
-#' @aliases .miaDashDefaultPanels .miaDashOtherPanels .foreignFormats
-#' .exportFormats .transformMethods .qualityMetrics .alphaMetrics .betaMetrics
-#' .betaMethods .clustMethods .DmmCriteria
+#' @aliases .miaDashDefaultPanels .miaDashOtherPanels .rdsFormats
+#' .foreignFormats .exportFormats .transformMethods .qualityMetrics
+#' .alphaMetrics .betaMetrics .betaMethods .clustMethods .DmmCriteria
 NULL
 
 #' @rdname constants
@@ -31,6 +31,9 @@ NULL
 .miaDashOtherPanels <- c("PrevalencePlot", "RDAPlot", "ScreePlot",
     "LoadingPlot", "ColumnTreePlot", "RowGraphPlot", "ColumnGraphPlot",
     "RowDataPlot", "ColumnDataPlot")
+
+#' @rdname constants
+.rdsFormats <- c("TreeSE", "phyloseq", "BIOM", "DADA2")
 
 #' @rdname constants
 .foreignFormats <- c("BIOM", "HUMAnN", "MetaPhlAn", "Mothur", "QIIME2")

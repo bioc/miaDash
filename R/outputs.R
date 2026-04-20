@@ -49,6 +49,7 @@
     invisible(NULL)
 }
 
+#' @importFrom utils zip
 #' @importFrom SummarizedExperiment assay assay<-
 #' @importFrom rbiom as_rbiom write_biom write_mothur write_qiime2
 .write_foreign <- function(file, tse, assay.type, as){
@@ -62,11 +63,10 @@
     }
     
     temp_dir <- tempfile()
-    dir.create(temp_dir)
     
     FUN <- switch(as, Mothur = write_mothur, QIIME2 = write_qiime2)
     FUN(biom, temp_dir)
     
-    zip(file, files = list.files(temp_dir, full.names = TRUE))
+    zip(file, files = list.files(temp_dir, full.names = TRUE), flags = "-r9Xj")
     invisible(NULL)
 }

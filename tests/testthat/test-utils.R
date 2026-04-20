@@ -2,14 +2,13 @@ test_that("utils", {
   
     data("Tengeler2020", package = "mia")
     tse <- Tengeler2020
-
-    idx <- c(1, 3)
-    expect_equal(.import_datasets(idx),
-        data(package = "mia")$results[idx, "Item"])
+    
+    rObjects <- list(tse = tse)
+    pObjects <- new.env()
     
     expect_no_error(
-        tse <- .update_tse(tse, transformAssay,
-            list(x = tse, assay.type = "counts", method = "relabundance"))
+        tse <- .update_tse(rObjects, pObjects, "transformAssay",
+            list(tse, assay.type = "counts", method = "relabundance"))
     )
     
     item <- NULL

@@ -24,23 +24,41 @@
 
     # nocov start
     observeEvent(input$import, {
-      
+        
+        pObjects$commands <- .setupCommand
+        
         if( input$format == "dataset" ){
         
             rObjects$tse <- isolate(get(input$data))
+            pObjects$commands <- c(pObjects$commands, .dataCommand(input$data))
         
         }else if( input$format == "rds" ){
         
             isolate({
                 req(input$file)
                 rObjects$tse <- readRDS(input$file$datapath)
+                
+                pObjects$commands <- c(
+                    pObjects$commands, .rdsCommand(input$file)
+                )
+                
+                if( input$rds_format == "phyloseq" ){
+                    rObjects$tse <- .update_tse(rObjects, pObjects,
+                        "convertFromPhyloseq", list(rObjects$tse))
+                }else if( input$rds_format == "BIOM" ){
+                    rObjects$tse <- .update_tse(rObjects, pObjects,
+                        "convertFromBIOM", list(rObjects$tse))
+                }else if( input$rds_format == "DADA2" ){
+                    rObjects$tse <- .update_tse(rObjects, pObjects,
+                        "convertFromDADA2", list(rObjects$tse))
+                }
             })
         
         }else if( input$format == "raw" ){
         
             isolate({
                 req(input$assay)
-                 
+                
                 assay_list <- lapply(input$assay$datapath,
                     function(x) as.matrix(read.table(x, row.names = 1,
                         header = TRUE, sep = "\t")))
@@ -50,11 +68,11 @@
                 coldata <- .set_optarg(input$coldata$datapath,
                     alternative = DataFrame(row.names = colnames(assay_list[[1]])),
                     loader = read.table, row.names = 1, header = TRUE, sep = "\t")
-
+                
                 rowdata <- .set_optarg(input$rowdata$datapath,
                     loader = read.table, row.names = 1,
                     header = TRUE, sep = "\t")
-               
+                
                 row.tree <- .set_optarg(input$row.tree$datapath,
                     loader = read.tree)
                 
@@ -63,7 +81,7 @@
                 
                 fun_args <- list(assays = assay_list, colData = coldata,
                     rowData = rowdata, rowTree = row.tree, colTree = col.tree)
-        
+                
                 rObjects$tse <- .update_tse(
                      rObjects, pObjects, "TreeSummarizedExperiment", fun_args)
                 
@@ -205,7 +223,6 @@
 #' @importFrom TreeSummarizedExperiment rowTree
 #' @importFrom scater runMDS runPCA
 #' @importFrom scuttle addPerCellQC
-#' @importFrom vegan vegdist
 #' @importFrom bluster KmeansParam DmmParam HclustParam NNGraphParam
 .create_estimate_observers <- function(input, rObjects, pObjects) {
     
@@ -369,7 +386,7 @@
         
             updateSelectInput(session, inputId = "subassay",
                 choices = assayNames(rObjects$tse))
-          
+            
             updateSelectInput(session, inputId = "taxrank",
                 choices = rev(taxonomyRanks(rObjects$tse)))
             
@@ -427,9 +444,12 @@
         #all_cmds <- .track_it_all(pObjects, se_name, ecm_name, mod_commands)
         commands <- paste(pObjects$commands, collapse = "\n\n")
         
-        .print_message(title = "Analytical worklow", size = "l",
+        .print_message(title = "Generate reproducible R script", size = "l",
                 
-                p("description"),
+                "The script below reproduces your miaDash analysis. You can ",
+                "use it to continue the analysis programmatically, to share a ",
+                "reproducible script with your collaborators, or just to ",
+                "learn code-based microbiome analysis.", HTML("<br/><br/>"),
                 
                 aceEditor("iSEE_INTERNAL_tracked_code", mode = "r",
                     theme = "chrome", readOnly = TRUE, value = commands,
@@ -460,10 +480,8 @@
     
     observeEvent(input[["iSEE_INTERNAL_metadata_info"]], {
         req(rObjects$appMode == "analysis" )
-        
         browseURL(paste0("https://microbiome.github.io/mia/reference/",
             input$data, ".html"))
-        
     }, ignoreInit = TRUE)
     
     observeEvent(input[["iSEE_INTERNAL_app_control"]], {

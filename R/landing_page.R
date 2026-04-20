@@ -51,19 +51,17 @@
     disable("iSEE_INTERNAL_draft_tour")       # tour draft
     
     rObjects <- reactiveValues(tse = NULL, appMode = "analysis")
-    
     pObjects <- new.env()
-    pObjects$commands <- c()
     
     observe(.print_welcome_message())
     
     .create_import_observers(input, rObjects, pObjects)
     .create_manipulate_observers(input, rObjects, pObjects)
     .create_estimate_observers(input, rObjects, pObjects)
-    # Overwrite iSEE general observers with miaDash original ones
-    .create_general_observers(input, session, rObjects, pObjects)
     # Update observers that depend on user input
     .update_observers(input, session, rObjects)
+    # Overwrite iSEE general observers with miaDash original ones
+    .create_general_observers(input, session, rObjects, pObjects)
     
     .create_launch_observers(FUN, input, session, rObjects)
     
@@ -74,70 +72,72 @@
     # nocov end
 }
 
-
 # Define boxes
 .define_import_panel <- function(mia_datasets){
     # nocov start
     import_panel <- box(id = "import.panel", title = "Import", width = 4,
         status = "primary", solidHeader = TRUE, collapsible = TRUE,
-      
+        
         tabsetPanel(id = "format",
-      
+        
             tabPanel(title = "Dataset", value = "dataset", br(),
-                             
+                    
                 selectInput(inputId = "data", label = "Dataset:",
                     choices = mia_datasets, selected = mia_datasets[1L])),
-                    
+            
             tabPanel(title = "R Object", value = "rds", br(),
-                             
+                
+                radioButtons(inputId = "rds_format", label = "Format:",
+                    choices = .rdsFormats, inline = TRUE),
+                
                 fileInput(inputId = "file", label = "RDS:",
                     accept = ".rds", placeholder = "object.rds")),
-                    
+            
             tabPanel(title = "Raw Data", value = "raw", br(),
-                             
+                    
                 fileInput(inputId = "assay", label = "Assays:",
                     accept = ".tsv", multiple = TRUE,
                     placeholder = "assay.tsv"),
                 div(style = "margin-top: -20px"),
-                             
+                        
                 fileInput(inputId = "coldata", label = "colData:",
                     accept = ".tsv", placeholder = "coldata.tsv"),
                 div(style = "margin-top: -20px"),
-                             
+                        
                 fileInput(inputId = "rowdata", label = "rowData:",
                     accept = ".tsv", placeholder = "rowdata.tsv"),
                 div(style = "margin-top: -20px"),
-                             
+                        
                 fileInput(inputId = "row.tree", label = "rowTree:",
                     placeholder = "row.tree", accept = c(".tree", ".tre")),
                 div(style = "margin-top: -20px"),
-                           
+                      
                 fileInput(inputId = "col.tree", label = "colTree:",
                     placeholder = "col.tree", accept = c(".tree", ".tre")),
                 div(style = "margin-top: -20px"),
-                           
+                      
                 checkboxInput(inputId = "taxa.from.rownames",
                     label = "Derive rowData from assay rownames")),
-                  
+                
             tabPanel(title = "Foreign", value = "foreign", br(),
-                     
+                
                 radioButtons(inputId = "ftype", label = "Format:",
                     choices = .foreignFormats, inline = TRUE),
-                  
+                
                 fileInput(inputId = "main.file", label = "Main file:",
                     accept = c(".biom", ".tsv", ".shared", ".QZA", ".txt"),
                     placeholder = "biom, tsv, shared, QZA or txt"),
                 div(style = "margin-top: -20px"),
-                  
+                
                 fileInput(inputId = "col.data", label = "colData:",
                     accept = c(".tsv", ".design"),
                     placeholder = "tsv or design"),
                 div(style = "margin-top: -20px"),
-                 
+                
                 conditionalPanel(
                     condition = paste0("input.ftype == 'Mothur' | ",
                         "input.ftype == 'QIIME2'"),
-                      
+                    
                     fileInput(inputId = "f.rowdata", label = "rowData:",
                         accept = c(".taxonomy", ".qza"),
                         placeholder = "taxonomy or qza"),
