@@ -11,4 +11,4 @@ RUN apt-get update && apt-get install -y libglpk-dev && apt-get clean && rm -rf 
 
 ENV R_REMOTES_NO_ERRORS_FROM_WARNINGS=true
 
-RUN Rscript -e "pak::local_install('.', dependencies = TRUE)"
+RUN Rscript -e "install.packages('remotes'); remotes::install_local('.', dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE)"
