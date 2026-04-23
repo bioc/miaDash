@@ -1,4 +1,4 @@
-FROM bioconductor/bioconductor_docker:latest
+FROM bioconductor/bioconductor_docker:devel
 
 LABEL authors="giulio.benedetti@utu.fi" \
     description="Docker image containing the miaDash package in a bioconductor/bioconductor_docker:devel container."
